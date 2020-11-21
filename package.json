@@ -1,0 +1,11 @@
+{
+  "name": "video-maker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/GersonLCSJunior/video-maker.git",
+  "author": "GersonLCSJunior <gersonlcsjunior@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
