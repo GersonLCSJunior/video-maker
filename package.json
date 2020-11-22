@@ -6,6 +6,9 @@
   "author": "GersonLCSJunior <gersonlcsjunior@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "readline-sync": "^1.4.10"
+    "algorithmia": "^0.3.10",
+    "dotenv": "^8.2.0",
+    "readline-sync": "^1.4.10",
+    "sbd": "^1.0.18"
   }
 }
