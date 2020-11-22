@@ -2,13 +2,23 @@ require('dotenv').config();
 
 const Algorithmia = require('algorithmia');
 const sentenceBoundaryDetection = require('sbd');
+const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1')
 
 const ALGORITHMIA_API_KEY = process.env.ALGORITHMIA_API_KEY;
+const WATSON_API_KEY = process.env.WATSON_API_KEY;
+
+const nlu = new NaturalLanguageUnderstandingV1({
+    iam_apikey: WATSON_API_KEY,
+    version: '2018-04-05',
+    url: 'https://gateway.watsonplatform.net/natural-language-understanding/api/'
+})
 
 async function robot(content) {
     await fetchContentFromWikipedia(content);
     sanitizeContent(content);
     breakContentIntoSentences(content);
+    limitMaximumSentences(content);
+    await fetchKeywordsOfAllSentences(content);
 
     async function fetchContentFromWikipedia(content) {
         const algorithmiaAuthenticated = Algorithmia.client(ALGORITHMIA_API_KEY);
@@ -68,6 +78,37 @@ async function robot(content) {
                 text: sentence,
                 keywords: [],
                 images: []
+            })
+        })
+    }
+
+    function limitMaximumSentences(content) {
+        content.sentences = content.sentences.slice(0, content.maximumSentences);
+    }
+
+    async function fetchKeywordsOfAllSentences(content) {
+        for (const sentence of content.sentences) {
+            sentence.keywords = await fetchWatsonAndReturnKeywords(sentence.text)
+        }
+    }
+
+    async function fetchWatsonAndReturnKeywords(sentence) {
+        return new Promise((resolve, reject) => {
+            nlu.analyze({
+                text: sentence,
+                features: {
+                    keywords: {}
+                }
+            }, (error, response) => {
+                if (error) {
+                    reject(error);
+                }
+    
+                const keywords = response.keywords.map(keyword => {
+                    return keyword.text;
+                })
+    
+                resolve(keywords);
             })
         })
     }
