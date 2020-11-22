@@ -2461,6 +2461,11 @@ ignore@^3.3.5:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.10.tgz#0a97fb876986e8081c631160f8f9f389157f0043"
   integrity sha512-Pgs951kaMm5GXP7MOvxERINe3gsaVjUWFm+UZPSq9xYriQAksyhg0csnS0KXSNRD5NmNdapXEpjxG49+AKh/ug==
 
+image-downloader@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/image-downloader/-/image-downloader-4.0.1.tgz#2cf211107050595ed1f99af4531ebea4aeea3dfc"
+  integrity sha512-VfjlMHx1DDPN27x6IC15+6oejeG0A1S955r7oF4rsxqAh8+ygJ3avK8yi8pJztz5qir/x1dFV+eCIy3155byhg==
+
 import-from@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-from/-/import-from-2.1.0.tgz#335db7f2a7affd53aaa471d4b8021dee36b7f3b1"
