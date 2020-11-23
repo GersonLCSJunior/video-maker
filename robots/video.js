@@ -24,10 +24,11 @@ async function robot() {
   console.log('> [video-robot] Starting...')
   const content = state.load()
 
-  await convertAllImages(content)
-  await createAllSentenceImages(content)
-  await createYouTubeThumbnail()
-  await renderVideo(content)
+  await convertAllImages(content);
+  await createAllSentenceImages(content);
+  await createYouTubeThumbnail();
+  await renderAudio(content);
+  await renderVideo(content);
 
   state.save(content)
 
@@ -151,32 +152,47 @@ async function robot() {
     })
   }
 
+  async function renderAudio(content) {
+    const audio = ffmpeg();
+    for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+      audio.input(`./content/${sentenceIndex}-audio.wav`)
+    }
+    audio.mergeToFile('./content/voice.wav')
+  }
+
   async function renderVideo(content) {
     try {
+      await renderAllImagesWithAudio(content);
       return await renderVideoWithFFmpeg(content)
     } catch(err) {
       console.error(err)
     }    
   }
 
-  async function renderVideoWithFFmpeg(content) {
-    return new Promise((resolve, reject) => {
-      let images = []
-
-      for (
-        let sentenceIndex = 0;
-        sentenceIndex < content.sentences.length;
-        sentenceIndex++
-      ) {
-        images.push({
-          path: `./content/${sentenceIndex}-converted.png`,
-          caption: content.sentences[sentenceIndex].text
-        })
+  async function renderAllImagesWithAudio(content) {
+    return new Promise(async (resolve, reject) => {
+      for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+        await renderImagesWithAudio(sentenceIndex, content);
       }
+      resolve();
+    })
+  }
 
+  async function renderImagesWithAudio(sentenceIndex, content) {
+    return new Promise(async (resolve, reject) => {
+      const images = []
+      images.push({
+        path: `./content/${sentenceIndex}-converted.png`,
+        caption: content.sentences[sentenceIndex].text
+      })
+  
+      const duration = await getTrackDuration(`./content/${sentenceIndex}-audio.wav`);
+      const inBetweenTime = 2;
+      console.log(duration);
+  
       const videoOptions = {
         fps: 25,
-        loop: 9, // seconds
+        loop: duration+inBetweenTime, // seconds
         transition: true,
         transitionDuration: 1, // seconds
         videoBitrate: 1024,
@@ -205,22 +221,41 @@ async function robot() {
           MarginV: "40"
         }
       }
-
+  
       videoshow(images, videoOptions)
-        .audio(audio)
-        .save(video)
-        .on("start", () => {
-          console.log('> [video-robot] Starting FFmpeg')
-        })
-        .on("error", (err, stdout, stderr) => {
-          console.error("Error:", err)
-          console.error("ffmpeg stderr:", stderr)
-          reject(err)
-        })
-        .on("end", () => {
-          console.log('> [video-robot] FFmpeg closed')
-          resolve()
-        })
+      .audio(`./content/${sentenceIndex}-audio.wav`)
+      .save(`./content/${sentenceIndex}-video.mp4`)
+      .on("start", () => {
+        console.log(`> [video-robot] Starting FFmpeg for video ${sentenceIndex}`)
+      })
+      .on("error", (err, stdout, stderr) => {
+        console.error("Error:", err)
+        console.error("ffmpeg stderr:", stderr)
+        reject(err)
+      })
+      .on("end", () => {
+        console.log('> [video-robot] FFmpeg closed')
+        resolve()
+      })
+    })
+  }
+
+  async function renderVideoWithFFmpeg(content) {
+    const video = ffmpeg();
+    for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
+      video.input(`./content/${sentenceIndex}-video.mp4`)
+    }
+    video.mergeToFile('./content/video.mp4')
+  }
+
+  async function getTrackDuration(filePath) {
+    return new Promise((resolve, reject) => {
+      ffmpeg.ffprobe(filePath, function(error, metadata) {
+        if (error) {
+          reject(error);
+        }
+        resolve(metadata.format.duration);
+      });
     })
   }
 
