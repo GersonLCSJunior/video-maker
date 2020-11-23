@@ -6,13 +6,18 @@
   "author": "GersonLCSJunior <gersonlcsjunior@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "@ffprobe-installer/ffprobe": "^1.1.0",
     "algorithmia": "^0.3.10",
     "dotenv": "^8.2.0",
+    "fluent-ffmpeg": "^2.1.2",
     "gm": "^1.23.1",
     "googleapis": "^65.0.0",
+    "ibm-watson": "^5.7.1",
     "image-downloader": "^4.0.1",
     "readline-sync": "^1.4.10",
     "sbd": "^1.0.18",
+    "videoshow": "^0.1.12",
     "watson-developer-cloud": "^4.0.1"
   }
 }
