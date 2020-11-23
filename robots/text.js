@@ -27,7 +27,7 @@ async function robot() {
     async function fetchContentFromWikipedia(content) {
         const algorithmiaAuthenticated = Algorithmia.client(ALGORITHMIA_API_KEY);
         const wikipediaAlgorithm = algorithmiaAuthenticated.algo("web/WikipediaParser/0.1.2");
-        const wikipediaResponse = await wikipediaAlgorithm.pipe(content.searchTerm);
+        const wikipediaResponse = await wikipediaAlgorithm.pipe(`'${content.searchTerm}'`);
         const wikipediaContent = wikipediaResponse.get();
         
         content.sourceContentOriginal = wikipediaContent.content;

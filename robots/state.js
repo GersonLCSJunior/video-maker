@@ -1,5 +1,5 @@
 const fs = require('fs');
-const contentFileDir = './data'
+const contentFileDir = './content'
 const contentFileName = 'content.json';
 const contentFilePath = `${contentFileDir}/${contentFileName}`
 
@@ -16,6 +16,6 @@ function load() {
 }
 
 module.exports = {
-    save, 
+    save,
     load
 }
