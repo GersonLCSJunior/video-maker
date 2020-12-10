@@ -197,10 +197,10 @@ async function robot() {
         transitionDuration: 1, // seconds
         videoBitrate: 1024,
         videoCodec: "libx264",
-        size: "1080x?",
+        size: "640x?",
         audioBitrate: "128k",
         audioChannels: 2,
-        format: "mov",
+        format: "mp4",
         pixelFormat: "yuv420p",
         useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
         subtitleStyle: {
