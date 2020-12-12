@@ -1,18 +1,11 @@
 const gm = require('gm').subClass({imageMagick: true})
 const state = require('./state.js')
-const spawn = require('child_process').spawn
 const path = require('path')
 const rootPath = path.resolve(__dirname, '..')
-
-const os = require('os')
-const fs = require('fs')
 
 const videoshow = require('videoshow')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 const ffprobePath = require('@ffprobe-installer/ffprobe').path
-
-const audio = path.join(__dirname, '../templates/1/newsroom.mp3')
-const video = path.join(__dirname, '../content/output.mp4')
 
 let ffmpeg = require('fluent-ffmpeg')
 ffmpeg.setFfmpegPath(ffmpegPath)
@@ -27,7 +20,6 @@ async function robot() {
   await convertAllImages(content);
   await createAllSentenceImages(content);
   await createYouTubeThumbnail();
-  await renderAudio(content);
   await renderVideo(content);
 
   state.save(content)
@@ -150,14 +142,6 @@ async function robot() {
           resolve()
         })
     })
-  }
-
-  async function renderAudio(content) {
-    const audio = ffmpeg();
-    for (let sentenceIndex = 0; sentenceIndex < content.sentences.length; sentenceIndex++) {
-      audio.input(`./content/${sentenceIndex}-audio.wav`)
-    }
-    audio.mergeToFile('./content/voice.wav')
   }
 
   async function renderVideo(content) {
