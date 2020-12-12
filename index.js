@@ -13,7 +13,7 @@ const start = async () => {
     await robots.image();
     await robots.voice();
     await robots.video();
-    //await robots.youtube();
+    await robots.youtube();
 }
 
 start();
