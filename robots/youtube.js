@@ -1,6 +1,7 @@
 require('dotenv').config();
 const state = require('./state');
 const express = require('express');
+const fs = require('fs');
 const google = require('googleapis').google;
 const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
@@ -12,14 +13,12 @@ const URI = `http://localhost:${PORT}`;
 const REDIRECT_PATH = '/redirect'
 const REDIRECT_URI = URI + REDIRECT_PATH;
 
-// http://localhost:5399/redirect
-
 async function robot() {
     const content = state.load();
 
     await authenticateWithOAuth();
-    await uploadVideo();
-    await uploadThumbnail();
+    const videoInformation = await uploadVideo(content)
+    await uploadThumbnail(videoInformation)
 
     async function authenticateWithOAuth() {
         const webServer = await startWebServer()
